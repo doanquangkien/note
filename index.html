@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Previous styles remain the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(180deg, 
+                #F04770 0%,
+                #F78C6A 20%,
+                #FFD167 40%,
+                #06D7A0 60%,
+                #108AB1 80%,
+                #073A4B 100%);
+            padding: 20px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .digital-clock {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #073A4B;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .time {
+            font-size: 2.5em;
+            font-weight: 600;
+            color: #F04770;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .date {
+            font-size: 1.2em;
+            color: #108AB1;
+        }
+
+        /* Rest of the previous styles */
+        .note-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            min-height: 100px;
+            resize: vertical;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            width: 100%;
+        }
+
+        input[type="datetime-local"] {
+            padding: 8px 35px 8px 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #06D7A0;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #FFD167;
+        }
+
+        .notes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .note {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .time-info {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .time-info i {
+            font-size: 14px;
+            color: #F04770;
+        }
+
+        .note-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            padding: 0;
+        }
+
+        .delete-btn {
+            background: #ff4444;
+        }
+
+        .copy-btn {
+            background: #108AB1;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 0 20px;
+            max-width: 90%;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .time {
+                font-size: 2em;
+            }
+
+            .date {
+                font-size: 1em;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .note-header {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            textarea, input[type="datetime-local"] {
+                font-size: 16px;
+            }
+
+            .action-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="digital-clock">
+            <div class="time" id="time">00:00:00</div>
+            <div class="date" id="date">Thứ ..., Ngày ... Tháng ... Năm ...</div>
+        </div>
+        
+        <form class="note-form" id="noteForm">
+            <textarea placeholder="Nhập ghi chú của bạn..." required></textarea>
+            <div class="input-group">
+                <input type="datetime-local" required>
+                <i class="fas fa-clock"></i>
+            </div>
+            <button type="submit">Thêm Ghi chú</button>
+        </form>
+
+        <div class="notes-list" id="notesList">
+            <!-- Notes will be added here dynamically -->
+        </div>
+    </div>
+
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <p>Bạn có chắc chắn muốn xóa ghi chú này?</p>
+            <div class="modal-buttons">
+                <button id="confirmDelete">Xóa</button>
+                <button id="cancelDelete" style="background: #666;">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Đã sao chép vào clipboard!</div>
+
+    <script>
+        let notes = JSON.parse(localStorage.getItem('notes')) || [];
+        
+        const noteForm = document.getElementById('noteForm');
+        const notesList = document.getElementById('notesList');
+        const deleteModal = document.getElementById('deleteModal');
+        const toast = document.getElementById('toast');
+        let noteToDelete = null;
+
+        // Clock update function
+        function updateClock() {
+            const now = new Date();
+            const timeElement = document.getElementById('time');
+            const dateElement = document.getElementById('date');
+
+            // Update time
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            timeElement.textContent = `${hours}:${minutes}:${seconds}`;
+
+            // Update date
+            const days = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'];
+            const day = days[now.getDay()];
+            const date = now.getDate();
+            const month = now.getMonth() + 1;
+            const year = now.getFullYear();
+            dateElement.textContent = `${day}, Ngày ${date} Tháng ${month} Năm ${year}`;
+        }
+
+        // Update clock every second
+        setInterval(updateClock, 1000);
+        updateClock(); // Initial call
+
+        document.addEventListener('touchstart', (event) => {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (event) => {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        function showToast() {
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2000);
+        }
+
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast();
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+        }
+
+        function renderNotes() {
+            notesList.innerHTML = '';
+            const currentTime = new Date().getTime();
+
+            notes.forEach((note, index) => {
+                const noteElement = document.createElement('div');
+                noteElement.className = 'note';
+                
+                const isLocked = new Date(note.unlockDate).getTime() > currentTime;
+                const noteContent = isLocked ? '******' : note.content;
+
+                noteElement.innerHTML = `
+                    <div class="note-header">
+                        <span class="time-info">
+                            <i class="fas fa-calendar-alt"></i>
+                            Tạo lúc: ${new Date(note.createdAt).toLocaleString()}
+                        </span>
+                        <span class="time-info">
+                            <i class="fas fa-lock${!isLocked ? '-open' : ''}"></i>
+                            Mở khóa: ${new Date(note.unlockDate).toLocaleString()}
+                        </span>
+                    </div>
+                    <p>${noteContent}</p>
+                    <div class="note-actions">
+                        <button class="action-btn delete-btn" data-index="${index}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        ${!isLocked ? `
+                            <button class="action-btn copy-btn" data-content="${encodeURIComponent(noteContent)}">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+
+                notesList.appendChild(noteElement);
+            });
+        }
+
+        noteForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const content = noteForm.querySelector('textarea').value;
+            const unlockDate = noteForm.querySelector('input[type="datetime-local"]').value;
+
+            notes.push({
+                content,
+                createdAt: new Date().toISOString(),
+                unlockDate: new Date(unlockDate).toISOString()
+            });
+
+            localStorage.setItem('notes', JSON.stringify(notes));
+            noteForm.reset();
+            renderNotes();
+        });
+
+        notesList.addEventListener('click', (e) => {
+            const deleteBtn = e.target.closest('.delete-btn');
+            const copyBtn = e.target.closest('.copy-btn');
+
+            if (deleteBtn) {
+                noteToDelete = parseInt(deleteBtn.dataset.index);
+                deleteModal.style.display = 'flex';
+            } else if (copyBtn) {
+                const content = decodeURIComponent(copyBtn.dataset.content);
+                copyToClipboard(content);
+            }
+        });
+
+        document.getElementById('confirmDelete').addEventListener('click', () => {
+            notes.splice(noteToDelete, 1);
+            localStorage.setItem('notes', JSON.stringify(notes));
+            deleteModal.style.display = 'none';
+            renderNotes();
+        });
+
+        document.getElementById('cancelDelete').addEventListener('click', () => {
+            deleteModal.style.display = 'none';
+            noteToDelete = null;
+        });
+
+        setInterval(renderNotes, 1000);
+        renderNotes();
+    </script>
+</body>
+</html>
